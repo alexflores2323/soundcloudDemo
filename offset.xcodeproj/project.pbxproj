@@ -27,6 +27,7 @@
 		02F727471E7E1A26003B3951 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 02F727461E7E1A26003B3951 /* Assets.xcassets */; };
 		02F7274A1E7E1A26003B3951 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 02F727481E7E1A26003B3951 /* LaunchScreen.storyboard */; };
 		4542E4FD99F9F9C6AFDE1BB3 /* Pods_offset.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B007F57E9EB64AFD7D46D504 /* Pods_offset.framework */; };
+		4C26B9A01E8C28020071F47C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C26B99F1E8C28020071F47C /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		02F727491E7E1A26003B3951 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		02F7274B1E7E1A26003B3951 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		26074FB89C15DCC196508FA5 /* Pods-offset.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-offset.release.xcconfig"; path = "Pods/Target Support Files/Pods-offset/Pods-offset.release.xcconfig"; sourceTree = "<group>"; };
+		4C26B99F1E8C28020071F47C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A04B513FB6CD8F29ECC93B17 /* Pods-offset.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-offset.debug.xcconfig"; path = "Pods/Target Support Files/Pods-offset/Pods-offset.debug.xcconfig"; sourceTree = "<group>"; };
 		B007F57E9EB64AFD7D46D504 /* Pods_offset.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_offset.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -130,6 +132,7 @@
 		02F7273E1E7E1A25003B3951 /* offset */ = {
 			isa = PBXGroup;
 			children = (
+				4C26B99F1E8C28020071F47C /* GoogleService-Info.plist */,
 				02F37AC61E7E23B7002D1EE8 /* View */,
 				02F37AC51E7E23AC002D1EE8 /* Controllers */,
 				02F37AC41E7E2384002D1EE8 /* SupportingFiles */,
@@ -189,7 +192,7 @@
 				TargetAttributes = {
 					02F7273B1E7E1A24003B3951 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 895GDJN9HY;
+						DevelopmentTeam = B9452FEMTF;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -217,6 +220,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C26B9A01E8C28020071F47C /* GoogleService-Info.plist in Resources */,
 				02F37ACE1E7E32A2002D1EE8 /* bg.jpg in Resources */,
 				02F7274A1E7E1A26003B3951 /* LaunchScreen.storyboard in Resources */,
 				02F37ACC1E7E2B71002D1EE8 /* pp.jpg in Resources */,
@@ -255,7 +259,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		F469F6BBBA13D9E9E96E408E /* [CP] Copy Pods Resources */ = {
@@ -417,7 +421,7 @@
 			baseConfigurationReference = A04B513FB6CD8F29ECC93B17 /* Pods-offset.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 895GDJN9HY;
+				DEVELOPMENT_TEAM = B9452FEMTF;
 				INFOPLIST_FILE = offset/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = OxyMoron.offset;
@@ -431,7 +435,7 @@
 			baseConfigurationReference = 26074FB89C15DCC196508FA5 /* Pods-offset.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 895GDJN9HY;
+				DEVELOPMENT_TEAM = B9452FEMTF;
 				INFOPLIST_FILE = offset/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = OxyMoron.offset;

@@ -7,7 +7,8 @@
 //
 
 import UIKit
-import Parse
+//import Parse
+import Firebase
 
 class SignInVC: UIViewController {
     
@@ -28,7 +29,7 @@ class SignInVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+		setAuthListener()
         label.frame = CGRect(x: 10, y: 80, width: self.view.frame.size.width - 20, height: 50)
         usernameTxt.frame = CGRect(x: 10, y: label.frame.origin.y + 70, width: self.view.frame.size.width - 20, height: 30)
         passwordTxt.frame = CGRect(x: 10, y: usernameTxt.frame.origin.y + 40, width: self.view.frame.size.width - 20, height: 30)
@@ -60,6 +61,24 @@ class SignInVC: UIViewController {
         self.view.endEditing(true)
     }
 
+	func setAuthListener() {
+		FIRAuth.auth()?.addStateDidChangeListener({ auth, user in
+			if let u = user {
+				print(u.uid);
+			}
+			else {
+				print("signed out?")
+			}
+		})
+	}
+	
+	func firebaseLogin() {
+		if let email = usernameTxt.text {
+			if let pass = passwordTxt.text {
+				FIRAuth.auth()?.signIn(withEmail: email, password: pass, completion: nil)
+			}
+		}
+	}
 
     @IBAction func signInBtn_click(_ sender: Any) {
         
@@ -77,29 +96,36 @@ class SignInVC: UIViewController {
             let ok = UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil)
             alert.addAction(ok)
             self.present(alert, animated: true, completion: nil)
+			return
         }
+		
+		firebaseLogin()
         
         // login functions
-        PFUser.logInWithUsername(inBackground: usernameTxt.text!, password: passwordTxt.text!) { (user, error) -> Void in
-            if error == nil {
-                
-                // remember user or save in App Memeory did the user login or not
-                UserDefaults.standard.set(user!.username, forKey: "username")
-                UserDefaults.standard.synchronize()
-                
-                // call login function from AppDelegate.swift class
-                let appDelegate : AppDelegate = UIApplication.shared.delegate as! AppDelegate
-                appDelegate.login()
-                
-            } else {
-                
-                // show alert message
-                let alert = UIAlertController(title: "Error", message: error!.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
-                let ok = UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil)
-                alert.addAction(ok)
-                self.present(alert, animated: true, completion: nil)
-            }
-        }
+		
+		
+		
+		
+//        PFUser.logInWithUsername(inBackground: usernameTxt.text!, password: passwordTxt.text!) { (user, error) -> Void in
+//            if error == nil {
+//                
+//                // remember user or save in App Memeory did the user login or not
+//                UserDefaults.standard.set(user!.username, forKey: "username")
+//                UserDefaults.standard.synchronize()
+//                
+//                // call login function from AppDelegate.swift class
+//                let appDelegate : AppDelegate = UIApplication.shared.delegate as! AppDelegate
+//                appDelegate.login()
+//                
+//            } else {
+//                
+//                // show alert message
+//                let alert = UIAlertController(title: "Error", message: error!.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+//                let ok = UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil)
+//                alert.addAction(ok)
+//                self.present(alert, animated: true, completion: nil)
+//            }
+//        }
 
         
     }
