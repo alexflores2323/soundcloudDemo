@@ -7,7 +7,8 @@
 //
 
 import UIKit
-import Parse
+//import Parse
+import Firebase
 
 class signUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -36,10 +37,17 @@ class signUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
     
     
     var keyboard = CGRect()
+	
+	var storage: FIRStorageReference!
+	
+	var db: FIRDatabaseReference!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+		
+		storage = FIRStorage.storage().reference()
+		db = FIRDatabase.database().reference()
+		
         scrollView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)
         scrollView.contentSize.height = self.view.frame.height
         scrollViewHeight = scrollView.frame.size.height
@@ -140,10 +148,7 @@ class signUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
             self.scrollView.frame.size.height = self.view.frame.height
         })
     }
-    
-    
-
-    
+	
     
     @IBAction func signUpBtn_click(_ sender: Any) {
         
@@ -177,48 +182,38 @@ class signUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
             // VERY VERY VERY ** VERY VERY IMPORTANT -return
             return
         }
-        
-        // send data to server to related collumns
-        let user = PFUser()
-        user.username = usernameTxt.text?.lowercased()
-        user.email = emailTxt.text?.lowercased()
-        user.password = passwordTxt.text
-
-        
-        
-        // convert our image for sending to server
-        let avaData = UIImageJPEGRepresentation(avaImg.image!, 0.5)
-        let avaFile = PFFile(name: "ava.jpg", data: avaData!)
-        user["ava"] = avaFile
-        
-        
-        user.signUpInBackground { (success, error) in
-            if success {
-                print("registered")
-                
-                // remember looged user
-                UserDefaults.standard.set(user.username, forKey: "username")
-                UserDefaults.standard.synchronize()
-                
-                // call login func from AppDelegate.swift class
-                let appDelegate : AppDelegate = UIApplication.shared.delegate as! AppDelegate
-                appDelegate.login()
-                
-                
-            } else {
-                
-                // show alert message
-                let alert = UIAlertController(title: "Error", message: error!.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
-                let ok = UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil)
-                alert.addAction(ok)
-                self.present(alert, animated: true, completion: nil)
-                
-                
-            }
-        }
-        
-
-        
+		
+		let avaData = UIImageJPEGRepresentation(avaImg.image!, 0.5)
+		let md = FIRStorageMetadata(dictionary: ["content-type": "image/jpeg"])
+		let username = self.usernameTxt.text!
+		
+		if let email = emailTxt.text {
+			if let password = passwordTxt.text {
+				FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: {
+					user, error in
+					if user != nil {
+						UserDefaults.standard.set(user?.uid, forKey: "username")
+						UserDefaults.standard.synchronize()
+						self.storage.child((user?.uid)!).child("avatar.jpg").put(avaData!, metadata: md, completion: { data, error in
+							let url = String(describing: data?.downloadURL()!)
+							self.db.child("users").child((user?.uid)!).setValue([
+								"avatar": url,
+								"username": username,
+								"email": email
+							])
+							let appDelegate : AppDelegate = UIApplication.shared.delegate as! AppDelegate
+							appDelegate.login()
+						})
+					}
+					else {
+						let alert = UIAlertController(title: "Error", message: error!.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+							let ok = UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil)
+							alert.addAction(ok)
+							self.present(alert, animated: true, completion: nil)
+					}
+				})
+			}
+		}
     }
     
     @IBAction func cancelBtn_click(_ sender: Any) {

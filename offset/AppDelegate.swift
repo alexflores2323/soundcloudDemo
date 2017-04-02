@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         Parse.initialize(with: config)
         
-        login()
+		//login()
         
        
         

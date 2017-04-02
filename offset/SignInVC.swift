@@ -29,6 +29,7 @@ class SignInVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+		
 		setAuthListener()
         label.frame = CGRect(x: 10, y: 80, width: self.view.frame.size.width - 20, height: 50)
         usernameTxt.frame = CGRect(x: 10, y: label.frame.origin.y + 70, width: self.view.frame.size.width - 20, height: 30)
