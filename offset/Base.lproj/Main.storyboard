@@ -162,21 +162,21 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="1O6-h2-Svf">
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="first name" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="1O6-h2-Svf">
                                         <rect key="frame" x="8" y="331" width="359" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="irv-yc-1sn">
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="last name" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="irv-yc-1sn">
                                         <rect key="frame" x="8" y="369" width="359" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="1Yq-tq-mmh">
+                                    <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="1Yq-tq-mmh">
                                         <rect key="frame" x="8" y="407" width="359" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <nil key="textColor"/>
@@ -193,7 +193,9 @@
                         <outlet property="bioTxt" destination="irv-yc-1sn" id="g0N-vB-wsq"/>
                         <outlet property="cancelBtn" destination="62A-tQ-2wv" id="tEd-yp-IFb"/>
                         <outlet property="emailTxt" destination="9gu-CY-iV4" id="fhx-tB-yhr"/>
+                        <outlet property="firstNameInput" destination="RzR-ab-1MQ" id="aQK-lM-2Pn"/>
                         <outlet property="fullnameTxt" destination="1O6-h2-Svf" id="T7X-cW-bX2"/>
+                        <outlet property="lastNameInput" destination="RzR-ab-1MQ" id="Cee-BZ-84x"/>
                         <outlet property="passwordTxt" destination="96b-kG-1TV" id="mxG-XW-AE6"/>
                         <outlet property="repeatPassword" destination="G5a-cf-hGd" id="K1x-XN-lCv"/>
                         <outlet property="scrollView" destination="RzR-ab-1MQ" id="hYa-DL-VId"/>
@@ -275,7 +277,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="VFN-QW-tDG" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="sJ6-Dp-wlY">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="sJ6-Dp-wlY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -654,7 +656,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="vqc-D2-z3C" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="KOj-nB-Xj4">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="KOj-nB-Xj4">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-//import Parse
 import Firebase
 
 class signUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -31,7 +30,10 @@ class signUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
     @IBOutlet weak var signUpBtn: UIButton!
     
     @IBOutlet weak var cancelBtn: UIButton!
-    
+	
+	@IBOutlet weak var firstNameInput: UIScrollView!
+	@IBOutlet weak var lastNameInput: UIScrollView!
+	
     
     var scrollViewHeight : CGFloat = 0
     
@@ -195,14 +197,14 @@ class signUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
 						UserDefaults.standard.set(user?.uid, forKey: "username")
 						UserDefaults.standard.synchronize()
 						self.storage.child((user?.uid)!).child("avatar.jpg").put(avaData!, metadata: md, completion: { data, error in
-							let url = String(describing: data?.downloadURL()!)
+							let url = String(describing: data!.downloadURL()!)
 							self.db.child("users").child((user?.uid)!).setValue([
 								"avatar": url,
 								"username": username,
-								"email": email
+								"email": email,
+								"firstName": "first",
+								"lastName": "last"
 							])
-							let appDelegate : AppDelegate = UIApplication.shared.delegate as! AppDelegate
-							appDelegate.login()
 						})
 					}
 					else {

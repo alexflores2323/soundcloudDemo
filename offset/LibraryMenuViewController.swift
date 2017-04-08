@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Parse
+import Firebase
 
 class LibraryMenuViewController: UITableViewController {
     
@@ -17,29 +17,34 @@ class LibraryMenuViewController: UITableViewController {
     @IBOutlet weak var profilePictureView: UIImageView!
     @IBOutlet weak var usernameLabel: UILabel!
 
-    var user: PFUser?
+	//var user: PFUser?
 
-    
+	var user: FIRUser!
+	var db: FIRDatabaseReference!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        if user == nil {
-            user = PFUser.current()
-        }
-        user?.fetchIfNeededInBackground(block: { (object, error) in
-            if let fetchedUser = object as? PFUser {
-                if let profilePicLink = (fetchedUser.object(forKey: "ava") as? PFFile)?.url {
-                    if let profilePicURL = URL(string: profilePicLink) {
-                        self.backgroundImageView.sd_setImage(with: profilePicURL)
-                        self.profilePictureView.sd_setImage(with: profilePicURL)
-                    }
-                }
-                self.usernameLabel.text = fetchedUser.username
-            }
-        })
-
-        
+		let user = FIRAuth.auth()?.currentUser!
+		db = FIRDatabase.database().reference()
+		db.child("users").child(user!.uid).child("avatar").observeSingleEvent(of: .value, with: {snapshot in
+			let urlString = String(describing: snapshot.value!)
+			guard let url = URL(string: urlString) else { return }
+			URLSession.shared.dataTask(with: url) { (data, response, error) in
+				if error != nil {
+					print("Failed fetching image: \(error?.localizedDescription)")
+					return
+				}
+				guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+					print("Not a proper HTTPURLResponse or statusCode")
+					return
+				}
+				
+				DispatchQueue.main.async {
+					self.backgroundImageView.image = UIImage(data: data!)
+					self.profilePictureView.image = UIImage(data: data!)
+				}
+				}.resume()
+		})
     }
     
     override func viewDidLayoutSubviews() {
@@ -77,7 +82,7 @@ class LibraryMenuViewController: UITableViewController {
         }
         if let collectionVC = storyboard?.instantiateViewController(withIdentifier: "MusicCollectionVC") as? MusicCollectionViewController {
             collectionVC.type = type
-            collectionVC.user = user
+            collectionVC.user = user!
             present(collectionVC, animated: true, completion: nil)
         }
     }

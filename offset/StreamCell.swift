@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Parse
+import Firebase
 
 class StreamCell: UITableViewCell {
 
@@ -21,10 +21,13 @@ class StreamCell: UITableViewCell {
     
     var likeCount = 0
     var isLikedByCurrentUser = false
-    var likers: [PFUser]?
-    
-    
-    var object: PFObject?
+	
+	//var likers: [FIRUser]?
+	
+	var likers: [String]?
+	
+	var object: AnyObject?
+	
     var delegate: StreamCellDelegate?
     
     override func layoutSubviews() {
@@ -34,9 +37,12 @@ class StreamCell: UITableViewCell {
     }
     
     @IBAction func viewProfileButtonPressed(_ sender: UIButton) {
-        if let theUser = object?.object(forKey: "user") as? PFUser {
-            delegate?.streamCell(cell: self, didSelecteViewProfileButtonForUser: theUser)
-        }
+		if let user = FIRAuth.auth()?.currentUser {
+			delegate?.streamCell(cell: self, didSelecteViewProfileButtonForUser: user)
+		}
+//        if let theUser = object?.object(forKey: "user") as? PFUser {
+//            delegate?.streamCell(cell: self, didSelecteViewProfileButtonForUser: theUser)
+//        }
     }
     
     func fetchLikeData() {
@@ -46,29 +52,29 @@ class StreamCell: UITableViewCell {
                 print("no audio object")
                 return
             }
-            guard let currentUser = PFUser.current() else {
+            guard let currentUser = FIRAuth.auth()?.currentUser else {
                 print("no user logged in")
                 return
             }
-            let query = PFQuery(className: "Activity")
-            query.whereKey("user", equalTo: currentUser)
-            query.whereKey("audio", equalTo: audioObject)
-            query.whereKey("type", equalTo: "like")
-            query.cachePolicy = PFCachePolicy.cacheElseNetwork
-            query.findObjectsInBackground { (objects, error) in
-                if let theObjects = objects {
-                    if theObjects.count > 0 {
-                        self.likeButton.isSelected = true
-                        
-                    }
-                    else {
-                        self.likeButton.isSelected = false
-                        
-                    }
-                    self.likeButton.isHidden = false
-                    
-                }
-            }
+//            let query = PFQuery(className: "Activity")
+//            query.whereKey("user", equalTo: currentUser)
+//            query.whereKey("audio", equalTo: audioObject)
+//            query.whereKey("type", equalTo: "like")
+//            query.cachePolicy = PFCachePolicy.cacheElseNetwork
+//            query.findObjectsInBackground { (objects, error) in
+//                if let theObjects = objects {
+//                    if theObjects.count > 0 {
+//                        self.likeButton.isSelected = true
+//                        
+//                    }
+//                    else {
+//                        self.likeButton.isSelected = false
+//                        
+//                    }
+//                    self.likeButton.isHidden = false
+//                    
+//                }
+//            }
         }
         else {
             likeButton.isSelected = isLikedByCurrentUser
@@ -81,32 +87,32 @@ class StreamCell: UITableViewCell {
             print("no audio object")
             return
         }
-        guard let currentUser = PFUser.current() else {
+        guard let currentUser = FIRAuth.auth()?.currentUser else {
             print("no user logged in")
             return
         }
         sender.isSelected = !sender.isSelected
         if sender.isSelected {
-            let activityObject = PFObject(className: "Activity")
-            activityObject.setObject(audioObject, forKey: "audio")
-            activityObject.setObject(currentUser, forKey: "user")
-            activityObject.setObject("like", forKey: "type")
-            activityObject.saveEventually()
+//            let activityObject = PFObject(className: "Activity")
+//            activityObject.setObject(audioObject, forKey: "audio")
+//            activityObject.setObject(currentUser, forKey: "user")
+//            activityObject.setObject("like", forKey: "type")
+//            activityObject.saveEventually()
         }
         
         else {
-            let query = PFQuery(className: "Activity")
-            query.whereKey("user", equalTo: currentUser)
-            query.whereKey("audio", equalTo: audioObject)
-            query.whereKey("type", equalTo: "like")
-            query.getFirstObjectInBackground(block: { (likeObject, error) in
-                likeObject?.deleteEventually()
-            })
+//            let query = PFQuery(className: "Activity")
+//            query.whereKey("user", equalTo: currentUser)
+//            query.whereKey("audio", equalTo: audioObject)
+//            query.whereKey("type", equalTo: "like")
+//            query.getFirstObjectInBackground(block: { (likeObject, error) in
+//                likeObject?.deleteEventually()
+//            })
         }
         
     }
 }
 
 protocol StreamCellDelegate {
-    func streamCell(cell: StreamCell, didSelecteViewProfileButtonForUser user: PFUser)
+    func streamCell(cell: StreamCell, didSelecteViewProfileButtonForUser user: FIRUser)
 }

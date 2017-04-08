@@ -7,18 +7,26 @@
 //
 
 import UIKit
-import Parse
-
+import Firebase
 class MusicCollectionViewController: UITableViewController {
     
     var type = "play"
-    var objects = [PFObject]()
-    var user: PFUser?
-    
-    
+	
+	var db: FIRDatabaseReference!
+	
+	//var objects = [PFObject]()
+	var dataObjects: [AnyObject]!
+	
+	//var user: PFUser?
+	var user: FIRUser?
+
+	var uid: String!
+	
     
     override func viewDidLoad() {
         super.viewDidLoad()
+		db = FIRDatabase.database().reference()
+		dataObjects = [AnyObject]()
         fetchData()
     }
     
@@ -29,46 +37,68 @@ class MusicCollectionViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return objects.count
+        return dataObjects.count
     }
     
     
     func fetchData() {
         if let collectionUser = user {
-            let query = PFQuery(className: "Activity")
-            query.whereKey("user", equalTo: collectionUser)
-            query.whereKey("type", equalTo: type)
-            if type == "play" {
-                query.order(byDescending: "lastPlayed")
-            }
-            else {
-                query.order(byDescending: "createdAt")
-            }
-            query.includeKey("audio")
-            query.findObjectsInBackground(block: { (objects, error) in
-                if let theObjects = objects {
-                    self.objects = theObjects
-                    self.tableView.reloadData()
-                }
-            })
+			var playedData = [[String: AnyObject]]()
+			let id = collectionUser.uid
+			db.child("users").child(id).child("plays").observeSingleEvent(of: .value, with: { snapshot in
+				if let played = snapshot.value as? [String: AnyObject] {
+					let allKeys = played.keys
+					for k in allKeys {
+						let thisItem = [
+							"lastPlayed": played[k]?["lastPlayed"] as AnyObject,
+							"createdAt": played[k]?["createdAt"] as AnyObject,
+							"title": played[k]?["title"] as AnyObject,
+							"cover": played[k]?["cover"] as AnyObject
+						]
+						playedData.append(thisItem as [String : AnyObject])
+					}
+				}
+			})
+			// check user's recent activity: pull last played or play history for audio tree
+			// use this to populate the tableView
+			
+//            let query = PFQuery(className: "Activity")
+//            query.whereKey("user", equalTo: collectionUser)
+//            query.whereKey("type", equalTo: type)
+//            if type == "play" {
+//                query.order(byDescending: "lastPlayed")
+//            }
+//            else {
+//                query.order(byDescending: "createdAt")
+//            }
+//            query.includeKey("audio")
+//            query.findObjectsInBackground(block: { (objects, error) in
+//                if let theObjects = objects {
+//                    self.objects = theObjects
+//                    self.tableView.reloadData()
+//                }
+//            })
         }
                 
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CollectionCell", for: indexPath) as! SearchCell
-        
-        let activityObject = objects[indexPath.row]
-        if let audioObject = activityObject.object(forKey: "audio") as? PFObject {
-            
-            if let coverLink = (audioObject.object(forKey: "cover") as? PFFile)?.url {
-                if let coverURL = URL(string: coverLink) {
-                    cell.coverArtThumbnailView.sd_setImage(with: coverURL)
-                }
-            }
-            cell.titleLabel.text = audioObject.object(forKey: "title") as? String
-        }
+		
+		let cell = tableView.dequeueReusableCell(withIdentifier: "CollectionCell", for: indexPath) as! SearchCell
+        let activityObject = dataObjects[indexPath.row]
+		
+
+		
+//        if let audioObject = activityObject.object(forKey: "audio") as? PFObject {
+//            
+//            if let coverLink = (audioObject.object(forKey: "cover") as? PFFile)?.url {
+//                if let coverURL = URL(string: coverLink) {
+//                    cell.coverArtThumbnailView.sd_setImage(with: coverURL)
+//                }
+//            }
+//            cell.titleLabel.text = audioObject.object(forKey: "title") as? String
+//        }
 
         return cell
     }

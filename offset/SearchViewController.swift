@@ -7,27 +7,21 @@
 //
 
 import UIKit
-import Parse
 import SDWebImage
+import Firebase
 
 class SearchViewController: UITableViewController, UISearchBarDelegate {
     
-    
-    
-    var objects = [PFObject]()
-
-    
+	var db: FIRDatabaseReference!
+	
+    var objects = [AnyObject]()
+	
     @IBOutlet weak var searchBar: UISearchBar!
-    
-    
-    
-    
-    
-    
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		db = FIRDatabase.database().reference()
 
         navigationItem.titleView = searchBar
         searchBar.showsCancelButton = true
@@ -38,15 +32,6 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
 
         
     }
-
-   
-    
-    
-    
-    
-    
-    
-    
     
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -66,13 +51,32 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
         let object = objects[indexPath.row]
         
         // for the little circle pic in the search cell DO THIS....
-        if let coverLink = (object.object(forKey: "cover") as? PFFile)?.url {
-            if let coverURL = URL(string: coverLink) {
-                
-                cell.coverArtThumbnailView.sd_setImage(with: coverURL)
-            }
-        }
-        
+//        if let coverLink = (object.object(forKey: "cover") as? PFFile)?.url {
+//            if let coverURL = URL(string: coverLink) {
+//                
+//                cell.coverArtThumbnailView.sd_setImage(with: coverURL)
+//            }
+//        }
+		let user = FIRAuth.auth()?.currentUser
+		db.child("users").child((user?.uid)!).child("avatar").observeSingleEvent(of: .value, with: {snapshot in
+			let urlString = String(describing: snapshot.value!)
+			guard let url = URL(string: urlString) else { return }
+			URLSession.shared.dataTask(with: url) { (data, response, error) in
+				if error != nil {
+					print("Failed fetching image: \(error?.localizedDescription)")
+					return
+				}
+				guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+					print("Not a proper HTTPURLResponse or statusCode")
+					return
+				}
+				
+				DispatchQueue.main.async {
+					//self.profilePictureView.image = UIImage(data: data!)
+				}
+				}.resume()
+		})
+		
         // for the title next to to LITTLE CIRCLE PIC DO THIS....
         cell.titleLabel.text = object.object(forKey: "title") as? String
         
@@ -90,24 +94,24 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
     
     func searchFiles(searchTerm: String) {
         
-        let KeywordQuery = PFQuery(className: "Audio")
-        KeywordQuery.whereKey("searchItems", equalTo: searchTerm)
-        
-        let titleQuery = PFQuery(className: "Audio")
-        titleQuery.whereKey("title", equalTo: searchTerm)
-        
-        let query = PFQuery.orQuery(withSubqueries: [KeywordQuery, titleQuery])
-        query.includeKey("user")
-        query.findObjectsInBackground { (objects, error) in
-            
-            if let theObjects = objects {
-                
-                self.objects = theObjects
-                self.tableView.reloadData()
-                
-            }
-        }
-        
+//        let KeywordQuery = PFQuery(className: "Audio")
+//        KeywordQuery.whereKey("searchItems", equalTo: searchTerm)
+//        
+//        let titleQuery = PFQuery(className: "Audio")
+//        titleQuery.whereKey("title", equalTo: searchTerm)
+//        
+//        let query = PFQuery.orQuery(withSubqueries: [KeywordQuery, titleQuery])
+//        query.includeKey("user")
+//        query.findObjectsInBackground { (objects, error) in
+//            
+//            if let theObjects = objects {
+//                
+//                self.objects = theObjects
+//                self.tableView.reloadData()
+//                
+//            }
+//        }
+		
     }
     
     

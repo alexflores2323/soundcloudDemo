@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Parse
 import Firebase
 
 @UIApplicationMain
@@ -18,25 +17,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		
+		// Override point for customization after application launch.
 		FIRApp.configure()
 		
-        let config = ParseClientConfiguration { (config) in
-            
-            
-            config.applicationId = "EkihPvYv7zngvReacZClBvYG1jc4qf4QXuv81Dtp"
-            config.clientKey = "WeUwklJ697LRYXUVjC4orVSgxBPx0IfZa1EleFLf"
-            config.server = "https://parseapi.back4app.com/"
-            
-        }
-        
-        Parse.initialize(with: config)
-        
-		//login()
-        
-       
-        
-        // Override point for customization after application launch.
-        return true
+		logout()
+		
+		return true
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -60,6 +46,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+	
+	func logout() {
+		try! FIRAuth.auth()?.signOut()
+	}
 
     func login() {
         
@@ -72,17 +62,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             
             let middle = storyboard.instantiateViewController(withIdentifier: "middle")
-            
             let top = storyboard.instantiateViewController(withIdentifier: "top")
             let bottom = storyboard.instantiateViewController(withIdentifier: "bottom")
             
-            let snapContainer = SnapContainerViewController.containerViewWith(_middleVC: middle,
-                                                                              topVC: top,
-                                                                              bottomVC: bottom)
+            let snapContainer = SnapContainerViewController.containerViewWith(_middleVC: middle, topVC: top, bottomVC: bottom)
 
-            
-            
-            
             self.window?.rootViewController = snapContainer
             self.window?.makeKeyAndVisible()
             

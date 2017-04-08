@@ -28,6 +28,9 @@
 		02F7274A1E7E1A26003B3951 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 02F727481E7E1A26003B3951 /* LaunchScreen.storyboard */; };
 		4542E4FD99F9F9C6AFDE1BB3 /* Pods_offset.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B007F57E9EB64AFD7D46D504 /* Pods_offset.framework */; };
 		4C26B9A01E8C28020071F47C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4C26B99F1E8C28020071F47C /* GoogleService-Info.plist */; };
+		4C378B361E978989001918DB /* NavHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C378B351E978989001918DB /* NavHelper.swift */; };
+		4C378B381E978B00001918DB /* UserHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C378B371E978B00001918DB /* UserHelper.swift */; };
+		4C378B3A1E978CC9001918DB /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C378B391E978CC9001918DB /* User.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +57,9 @@
 		02F7274B1E7E1A26003B3951 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		26074FB89C15DCC196508FA5 /* Pods-offset.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-offset.release.xcconfig"; path = "Pods/Target Support Files/Pods-offset/Pods-offset.release.xcconfig"; sourceTree = "<group>"; };
 		4C26B99F1E8C28020071F47C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4C378B351E978989001918DB /* NavHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavHelper.swift; sourceTree = "<group>"; };
+		4C378B371E978B00001918DB /* UserHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserHelper.swift; sourceTree = "<group>"; };
+		4C378B391E978CC9001918DB /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		A04B513FB6CD8F29ECC93B17 /* Pods-offset.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-offset.debug.xcconfig"; path = "Pods/Target Support Files/Pods-offset/Pods-offset.debug.xcconfig"; sourceTree = "<group>"; };
 		B007F57E9EB64AFD7D46D504 /* Pods_offset.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_offset.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -132,6 +138,7 @@
 		02F7273E1E7E1A25003B3951 /* offset */ = {
 			isa = PBXGroup;
 			children = (
+				4C378B341E978969001918DB /* Utils */,
 				4C26B99F1E8C28020071F47C /* GoogleService-Info.plist */,
 				02F37AC61E7E23B7002D1EE8 /* View */,
 				02F37AC51E7E23AC002D1EE8 /* Controllers */,
@@ -155,6 +162,16 @@
 				B007F57E9EB64AFD7D46D504 /* Pods_offset.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4C378B341E978969001918DB /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				4C378B351E978989001918DB /* NavHelper.swift */,
+				4C378B371E978B00001918DB /* UserHelper.swift */,
+				4C378B391E978CC9001918DB /* User.swift */,
+			);
+			name = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -291,9 +308,12 @@
 				029DADA81E8B68A20080C18F /* NowPlayingViewController.swift in Sources */,
 				029DADAC1E8B6BFC0080C18F /* Audio.swift in Sources */,
 				027891711E7FD41B00E276F9 /* SearchViewController.swift in Sources */,
+				4C378B3A1E978CC9001918DB /* User.swift in Sources */,
 				02F37AC11E7E20CE002D1EE8 /* VerticalScrollViewController.swift in Sources */,
 				02F37AC81E7E23DB002D1EE8 /* SignInVC.swift in Sources */,
 				029DADAE1E8B70200080C18F /* StreamViewController.swift in Sources */,
+				4C378B381E978B00001918DB /* UserHelper.swift in Sources */,
+				4C378B361E978989001918DB /* NavHelper.swift in Sources */,
 				029DADAA1E8B6BC50080C18F /* LibraryMenuViewController.swift in Sources */,
 				029DADB21E8B7C230080C18F /* MusicCollectionViewController.swift in Sources */,
 				02F727401E7E1A25003B3951 /* AppDelegate.swift in Sources */,
