@@ -10,7 +10,7 @@ target 'offset' do
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
   pod 'Firebase/Auth'
-
+  pod 'FirebaseUI', '~> 3.0'
   # Pods for offset
 
 end
