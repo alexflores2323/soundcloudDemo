@@ -16,12 +16,14 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
 	
     var objects = [AnyObject]()
 	
-	var u: User!
+	var user: FIRUser!
 	
     @IBOutlet weak var searchBar: UISearchBar!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		user = FIRAuth.auth()?.currentUser!
 		
 		db = FIRDatabase.database().reference()
 
@@ -53,12 +55,24 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
         let object = objects[indexPath.row]
         
         // for the little circle pic in the search cell DO THIS....
-//        if let coverLink = (object.object(forKey: "cover") as? PFFile)?.url {
-//            if let coverURL = URL(string: coverLink) {
-//                
-//                cell.coverArtThumbnailView.sd_setImage(with: coverURL)
-//            }
-//        }
+        if let coverLink = object.object(forKey: "cover") as? String {
+            if let coverURL = URL(string: coverLink) {
+				URLSession.shared.dataTask(with: coverURL) { (data, response, error) in
+					if error != nil {
+						print("Failed fetching image: \(error?.localizedDescription)")
+						return
+					}
+					guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+						print("Not a proper HTTPURLResponse or statusCode")
+						return
+					}
+					
+					DispatchQueue.main.async {
+						cell.coverArtThumbnailView.image = UIImage(data: data!)
+					}
+				}.resume()
+            }
+		}
 		let user = FIRAuth.auth()?.currentUser
 		db.child("users").child((user?.uid)!).child("avatar").observeSingleEvent(of: .value, with: {snapshot in
 			let urlString = String(describing: snapshot.value!)

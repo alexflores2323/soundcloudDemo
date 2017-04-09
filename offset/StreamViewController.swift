@@ -9,24 +9,17 @@
 import UIKit
 import SDWebImage
 import Firebase
-import FirebaseDatabaseUI
 
 class StreamViewController: UITableViewController, StreamCellDelegate {
-	internal func streamCell(cell: StreamCell, didSelecteViewProfileButtonForUser user: User) {
-		<#code#>
-	}
-
-	
     
     var audioObjects = [Audio]()
-	var audioKeys = [String]()
-	var db: FIRDatabaseReference!
-	var user: FIRUser!
-	var u: User!
 	
-	var tableViewDataSource: FUITableViewDataSource!
-	var query: FIRDatabaseQuery!
-
+	var audioKeys = [String]()
+	
+	var db: FIRDatabaseReference!
+	
+	var user: FIRUser!
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 		
@@ -34,33 +27,8 @@ class StreamViewController: UITableViewController, StreamCellDelegate {
 		
 		user = (FIRAuth.auth()?.currentUser)!
 		
-		//loadData()
-		self.query = self.db.child("activity").queryLimited(toLast: 50)
-		
-		self.tableViewDataSource = self.tableView.bind(to: self.query!) { (view, indexPath, snap) -> StreamCell in
-				let cell = view.dequeueReusableCell(withIdentifier: "StreamCell", for: indexPath) as! StreamCell
-				let audio = self.audioObjects[indexPath.row]
-				
-				cell.likeButton.isHidden = true
-				audio.fetchLikersData { (likes, isLiked, error) in
-					if error == nil {
-						cell.likeButton.isHidden = false
-						cell.likeButton.isSelected = isLiked
-					}
-				}
-				
-				
-				//let object = audio
-				
-				cell.object = audio
-				cell.delegate = self
-				if let name = self.user.email {
-					cell.usernameLabel.text = name
-				}
-				
-				return cell
-		}
-		
+        loadData()
+        
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(loadData), for: .valueChanged)
     }
@@ -89,37 +57,16 @@ class StreamViewController: UITableViewController, StreamCellDelegate {
         }
 		
         
-		//let object = audio.object
-        
-        cell.object = audio
+        let object = audio.object
+		
+        cell.object = object
+		cell.audioKey = audio.autogenKey
+		
         cell.delegate = self
-		if let name = user.email {
-			cell.usernameLabel.text = name
-		}
-//		if user.photoURL != nil {
-//		URLSession.shared.dataTask(with: user.photoURL!) { (data, response, error) in
-//			if error != nil {
-//				print("Failed fetching image: \(error?.localizedDescription)")
-//				return
-//			}
-//			guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-//				print("Not a proper HTTPURLResponse or statusCode")
-//				return
-//			}
-//			
-//			DispatchQueue.main.async {
-//				//self.backgroundImageView.image = UIImage(data: data!)
-//				//self.profilePictureView.image = UIImage(data: data!)
-//			}
-//			}.resume()
-//		}
-
-        cell.captionLabel.text = object.object(forKey: "description") as? String
-        if let length = object.object(forKey: "length") as? NSNumber {
-            cell.musicLengthLabel.text = length.stringValue
-        }
-        
-        let formatter = DateFormatter()
+	
+        cell.captionLabel.text = object["title"] as! String
+		cell.musicLengthLabel.text = (object["length"] as! String).uppercased()
+		let formatter = DateFormatter()
         formatter.dateFormat = "MMM dd, yyyy"
         if let postedDate = object["createdAt"] as? String {
             cell.timeLabel.text = postedDate
@@ -187,7 +134,7 @@ class StreamViewController: UITableViewController, StreamCellDelegate {
     
     func streamCell(cell: StreamCell, didSelecteViewProfileButtonForUser user: FIRUser) {
         if let profileVC = storyboard?.instantiateViewController(withIdentifier: "bottom") as? LibraryMenuViewController {
-            profileVC.user = user
+            profileVC.user = FIRAuth.auth()?.currentUser!
             navigationController?.pushViewController(profileVC, animated: true)
         }
     }

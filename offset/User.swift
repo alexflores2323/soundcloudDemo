@@ -17,7 +17,7 @@ class User: NSObject, NSCoding {
 	private var _last: String
 	private var _lastPlayed: [AnyObject]
 	private var _likes: [String]
-	private var _photoURL: String
+	private var _avatar: String
 	private var _actions: [AnyObject]
 	private var _plays: [AnyObject]
 	
@@ -26,7 +26,7 @@ class User: NSObject, NSCoding {
 		_email = user["email"]!
 		_first = user["first"]!
 		_last = user["last"]!
-		_photoURL = "placehold.it"
+		_avatar = "placehold.it"
 		_actions = [AnyObject]()
 		_plays = [AnyObject]()
 		_likes = [String]()
@@ -57,9 +57,9 @@ class User: NSObject, NSCoding {
 		}
 	}
 	
-	var photoURL: String {
+	var avatar: String {
 		get {
-			return _photoURL;
+			return _avatar;
 		}
 	}
 	

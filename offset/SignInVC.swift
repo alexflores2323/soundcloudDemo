@@ -70,10 +70,10 @@ class SignInVC: UIViewController {
 			if user != nil {
 				let uid = user!.uid
 				let userData = ["uid": uid, "first": "", "last": "", "email": ""]
-				let u = User(user: userData)
-				UserHelper.saveUser(user: u)
+				//let u = User(user: userData)
+				UserHelper.saveFIRUser(user: user!)
 				let appDelegate = UIApplication.shared.delegate as! AppDelegate
-				appDelegate.user = u
+				appDelegate.user = user!
 				appDelegate.login()
 			}
 			else {

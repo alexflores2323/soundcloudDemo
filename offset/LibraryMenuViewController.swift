@@ -16,16 +16,17 @@ class LibraryMenuViewController: UITableViewController {
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var profilePictureView: UIImageView!
     @IBOutlet weak var usernameLabel: UILabel!
-	
-	var u: User!
-	
+
 	var user: FIRUser!
 	var db: FIRDatabaseReference!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-		let user = FIRAuth.auth()?.currentUser!
+		
+		user = FIRAuth.auth()?.currentUser!
 		db = FIRDatabase.database().reference()
+		
+		
 		db.child("users").child(user!.uid).child("avatar").observeSingleEvent(of: .value, with: {snapshot in
 			let urlString = String(describing: snapshot.value!)
 			guard let url = URL(string: urlString) else { return }

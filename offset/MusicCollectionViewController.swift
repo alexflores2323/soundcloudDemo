@@ -14,21 +14,36 @@ class MusicCollectionViewController: UITableViewController {
 	
 	var db: FIRDatabaseReference!
 	
-	//var objects = [PFObject]()
 	var dataObjects: [AnyObject]!
-	
-	//var user: PFUser?
-	var user: FIRUser?
 
+	var user: FIRUser!
+	
 	var uid: String!
 	
-	var u: User!
-    
+	@IBAction func backNavClick(_ sender: Any) {
+		self.dismiss(animated: true, completion: nil)
+	}
+	
+	@IBAction func clearNavClick(_ sender: Any) {
+		let alert = UIAlertController(title: "Naw Jk", message: "Can't actually clear, lol", preferredStyle: UIAlertControllerStyle.alert)
+		let ok = UIAlertAction(title: "... Okay", style: UIAlertActionStyle.default, handler: nil)
+		alert.addAction(ok)
+		self.present(alert, animated: true, completion: nil)
+	}
+	
+	
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		user = FIRAuth.auth()?.currentUser!
+		
 		db = FIRDatabase.database().reference()
+		
 		dataObjects = [AnyObject]()
-        fetchData()
+		
+		print("going to fetch the data")
+		
+		fetchData()
     }
     
     // MARK: - Table view data source
@@ -44,41 +59,37 @@ class MusicCollectionViewController: UITableViewController {
     
     func fetchData() {
         if let collectionUser = user {
-			var playedData = [[String: AnyObject]]()
+			print("collection user id passed")
+			//var playedData = [[String: AnyObject]]()
 			let id = collectionUser.uid
-			db.child("users").child(id).child("plays").observeSingleEvent(of: .value, with: { snapshot in
-				if let played = snapshot.value as? [String: AnyObject] {
-					let allKeys = played.keys
-					for k in allKeys {
-						let thisItem = [
-							"lastPlayed": played[k]?["lastPlayed"] as AnyObject,
-							"createdAt": played[k]?["createdAt"] as AnyObject,
-							"title": played[k]?["title"] as AnyObject,
-							"cover": played[k]?["cover"] as AnyObject
-						]
-						playedData.append(thisItem as [String : AnyObject])
-					}
-				}
-			})
+//			db.child("users").child(id).child("plays").observeSingleEvent(of: .value, with: { snapshot in
+//				if let played = snapshot.value as? [String: AnyObject] {
+//					let allKeys = played.keys
+//					for k in allKeys {
+//						let thisItem = [
+//							"createdAt": played[k]?["lastPlayed"] as AnyObject,
+//							"audio": played[k]?["audio"] as AnyObject,
+//							"user": collectionUser.uid as AnyObject
+//						]
+//						self.dataObjects.append(thisItem as AnyObject)
+//					}
+//				}
+//			})
 			// check user's recent activity: pull last played or play history for audio tree
 			// use this to populate the tableView
-			
-//            let query = PFQuery(className: "Activity")
-//            query.whereKey("user", equalTo: collectionUser)
-//            query.whereKey("type", equalTo: type)
-//            if type == "play" {
-//                query.order(byDescending: "lastPlayed")
-//            }
-//            else {
-//                query.order(byDescending: "createdAt")
-//            }
-//            query.includeKey("audio")
-//            query.findObjectsInBackground(block: { (objects, error) in
-//                if let theObjects = objects {
-//                    self.objects = theObjects
-//                    self.tableView.reloadData()
-//                }
-//            })
+			let query = (db.child("activity").queryOrdered(byChild: "audio"))
+			print(query)
+			query.observeSingleEvent(of: .value, with: {snapshot in
+				print(snapshot.value!)
+				if let data = snapshot.value! as? [String: AnyObject] {
+					for k in data.keys {
+						if data[k]?["type"] as! String == "play" {
+							self.dataObjects.append(data[k] as AnyObject)
+						}
+					}
+					self.tableView.reloadData()
+				}
+			})
         }
                 
     }
@@ -89,65 +100,21 @@ class MusicCollectionViewController: UITableViewController {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "CollectionCell", for: indexPath) as! SearchCell
         let activityObject = dataObjects[indexPath.row]
 		
-
-		
-//        if let audioObject = activityObject.object(forKey: "audio") as? PFObject {
-//            
-//            if let coverLink = (audioObject.object(forKey: "cover") as? PFFile)?.url {
-//                if let coverURL = URL(string: coverLink) {
-//                    cell.coverArtThumbnailView.sd_setImage(with: coverURL)
-//                }
-//            }
-//            cell.titleLabel.text = audioObject.object(forKey: "title") as? String
-//        }
-
+		if let audioKey = activityObject["audio"] as? String {
+			db.child("songs").child(audioKey).observeSingleEvent(of: .value, with: {snapshot in
+				print(snapshot.value!)
+				if let audioObject = snapshot.value! as? [String: AnyObject] {
+					if let coverLink = audioObject["cover"] as? String {
+						if let coverURL = URL(string: coverLink) {
+							cell.coverArtThumbnailView.sd_setImage(with: coverURL)
+						}
+					}
+					cell.titleLabel.text = audioObject["title"] as! String
+				}
+			})
+		}
         return cell
     }
-    
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
+  
 
 }

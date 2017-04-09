@@ -31,7 +31,7 @@ class NowPlayingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		let user = (FIRAuth.auth()?.currentUser)!
+		user = (FIRAuth.auth()?.currentUser)!
 		
 		db = FIRDatabase.database().reference()
 		
@@ -41,7 +41,7 @@ class NowPlayingViewController: UIViewController {
 					setCoverImage(coverURL)
 				}
 			}
-			self.usernameButton.setTitle(user.displayName, for: .normal)
+			self.usernameButton.setTitle(user.email, for: .normal)
 			titleLabel.text = obj["title"]
 		}
 		
@@ -114,13 +114,8 @@ class NowPlayingViewController: UIViewController {
         
     }
 
-        @IBAction func dismissButtonPressed(_ sender: UIButton) {
-			dismiss(animated: true) {
-                
-			// call login function from AppDelegate.swift class
-			NavHelper.login()
-
-            }
+	@IBAction func dismissButtonPressed(_ sender: UIButton) {
+			dismiss(animated: true, completion: nil)
     }
     
     @IBAction func likeButtonPressed(_ sender: UIButton) {
@@ -140,28 +135,14 @@ class NowPlayingViewController: UIViewController {
     
     
     @IBAction func saveButtonPressed(_ sender: UIButton) {
-		// store the player data
-		
 		if let obj = object {
-			if let user = FIRAuth.auth()?.currentUser {
-				let title = obj["title"]! as String
-				let cover = obj["cover"]! as String
-				let key = db.child("users").child(user.uid).child("actions").childByAutoId().key
-				let dataPath = "\(user.uid)/actions/\(key)"
-				db.child("users").child(dataPath).child("data").setValue(["title": title, "cover": cover])
-				db.child("users").child(dataPath).setValue(["type": "save"])
+			guard let u = user else {
+				return
 			}
+			let key = db.child("activity").childByAutoId().key
+			db.child("activity").child(key).setValue(["audio": obj["audio"], "user": u.uid, "type": "save", "createdAt": String(describing: Date())])
+
 		}
-		
-		//let activity = PFObject(className: "Activity")
-//        if let currentUser = PFUser.current() {
-//            activity.setObject(currentUser, forKey: "user")
-//        }
-//        activity.setObject("save", forKey: "type")
-//        if let theObject = object {
-//            activity.setObject(theObject, forKey: "audio")
-//        }
-//        activity.saveInBackground()
     }
     
     @IBAction func shareButtonPressed(_ sender: UIButton) {
@@ -182,7 +163,7 @@ class NowPlayingViewController: UIViewController {
     
     func playAudio() {
 		// see if we find the file url
-		guard let audioURLString = object?["soundfile"] else {
+		guard let audioURLString = object?["audioFile"] else {
 			print("no audio url found")
 			return
 		}
@@ -198,24 +179,6 @@ class NowPlayingViewController: UIViewController {
 		player = AVPlayer(playerItem: playerItem)
 		player?.play()
 		isPlaying = true
-//        guard let audioURLString = (object?.object(forKey: "audioFile") as? PFFile)?.url else {
-//            print("no audio url found")
-//            return
-//        }
-//		// see if the encoding is okay?
-//        guard let thisString = audioURLString.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) else {
-//            print("encodeing error")
-//            return
-//        }
-//		// see if okay url creation?
-//        guard let audioURL = URL(string: thisString) else {
-//            print("cannot create url")
-//            return
-//        }
-//        let playerItem = AVPlayerItem(url: audioURL)
-//        player = AVPlayer(playerItem: playerItem)
-//        player?.play()
-//        isPlaying = true
     }
 
     
