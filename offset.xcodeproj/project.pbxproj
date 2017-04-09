@@ -31,6 +31,7 @@
 		4C378B361E978989001918DB /* NavHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C378B351E978989001918DB /* NavHelper.swift */; };
 		4C378B381E978B00001918DB /* UserHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C378B371E978B00001918DB /* UserHelper.swift */; };
 		4C378B3A1E978CC9001918DB /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C378B391E978CC9001918DB /* User.swift */; };
+		4C9134C51E9A1B3500BCA1E7 /* Arual.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4C9134C41E9A1B3500BCA1E7 /* Arual.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,7 @@
 		4C378B351E978989001918DB /* NavHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavHelper.swift; sourceTree = "<group>"; };
 		4C378B371E978B00001918DB /* UserHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserHelper.swift; sourceTree = "<group>"; };
 		4C378B391E978CC9001918DB /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		4C9134C41E9A1B3500BCA1E7 /* Arual.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Arual.ttf; sourceTree = "<group>"; };
 		A04B513FB6CD8F29ECC93B17 /* Pods-offset.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-offset.debug.xcconfig"; path = "Pods/Target Support Files/Pods-offset/Pods-offset.debug.xcconfig"; sourceTree = "<group>"; };
 		B007F57E9EB64AFD7D46D504 /* Pods_offset.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_offset.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -79,6 +81,7 @@
 		02F37AC41E7E2384002D1EE8 /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
+				4C9134C41E9A1B3500BCA1E7 /* Arual.ttf */,
 				02F37ACD1E7E32A2002D1EE8 /* bg.jpg */,
 				02F37ACB1E7E2B71002D1EE8 /* pp.jpg */,
 				02F7273F1E7E1A25003B3951 /* AppDelegate.swift */,
@@ -243,6 +246,7 @@
 				02F37ACC1E7E2B71002D1EE8 /* pp.jpg in Resources */,
 				02F727471E7E1A26003B3951 /* Assets.xcassets in Resources */,
 				02F727451E7E1A25003B3951 /* Main.storyboard in Resources */,
+				4C9134C51E9A1B3500BCA1E7 /* Arual.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

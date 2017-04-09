@@ -21,24 +21,30 @@ class StreamCell: UITableViewCell {
     
     var likeCount = 0
     var isLikedByCurrentUser = false
-	
-	//var likers: [FIRUser]?
-	
+		
 	var likers: [String]?
 	
 	var object: AnyObject?
 	
     var delegate: StreamCellDelegate?
+	
+	var user: FIRUser?
+	
+	var db: FIRDatabaseReference!
+	
+	var audioKey: String!
     
     override func layoutSubviews() {
         super.layoutSubviews()
+		user = FIRAuth.auth()?.currentUser!
+		db = FIRDatabase.database().reference()
         profilePictureView.layer.cornerRadius = profilePictureView.frame.width / 2
         profilePictureView.layer.masksToBounds = true
     }
     
     @IBAction func viewProfileButtonPressed(_ sender: UIButton) {
-		if let user = FIRAuth.auth()?.currentUser {
-			delegate?.streamCell(cell: self, didSelecteViewProfileButtonForUser: user)
+		if let currentUser = user {
+			delegate?.streamCell(cell: self, didSelecteViewProfileButtonForUser: currentUser)
 		}
 //        if let theUser = object?.object(forKey: "user") as? PFUser {
 //            delegate?.streamCell(cell: self, didSelecteViewProfileButtonForUser: theUser)
@@ -93,21 +99,22 @@ class StreamCell: UITableViewCell {
         }
         sender.isSelected = !sender.isSelected
         if sender.isSelected {
-//            let activityObject = PFObject(className: "Activity")
-//            activityObject.setObject(audioObject, forKey: "audio")
-//            activityObject.setObject(currentUser, forKey: "user")
-//            activityObject.setObject("like", forKey: "type")
-//            activityObject.saveEventually()
+			let key = db.child("activity").childByAutoId().key
+			db.child("activity").child(key).setValue(["audio": audioKey, "user": currentUser.uid, "createdAt": String(describing: Date()), "type": "like" ])
         }
         
         else {
-//            let query = PFQuery(className: "Activity")
-//            query.whereKey("user", equalTo: currentUser)
-//            query.whereKey("audio", equalTo: audioObject)
-//            query.whereKey("type", equalTo: "like")
-//            query.getFirstObjectInBackground(block: { (likeObject, error) in
-//                likeObject?.deleteEventually()
-//            })
+			let query = (db.child("activity").queryOrderedByValue().queryEqual(toValue: "user", childKey: currentUser.uid))
+			query.observeSingleEvent(of: .value, with: {snapshot in
+				if let data = snapshot.value! as? [String: [String: String]] {
+					for k in data.keys {
+						if data[k]?["type"] == "like" {
+							self.db.child("activity").child(k).removeValue()
+						}
+					}
+				}
+			})
+			print(query)
         }
         
     }

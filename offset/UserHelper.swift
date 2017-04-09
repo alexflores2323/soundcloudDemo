@@ -16,4 +16,9 @@ class UserHelper {
 		UserDefaults.standard.synchronize()
 	}
 	
+	static func saveFIRUser(user: FIRUser) {
+		UserDefaults.standard.set(user.email, forKey: "email")
+		UserDefaults.standard.synchronize()
+	}
+	
 }

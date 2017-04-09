@@ -13,14 +13,14 @@ import Firebase
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+	var user: FIRUser!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		
 		// Override point for customization after application launch.
 		FIRApp.configure()
 		
-		logout()
+		//logout()
 		
 		return true
     }
@@ -61,9 +61,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             
-            let middle = storyboard.instantiateViewController(withIdentifier: "middle")
-            let top = storyboard.instantiateViewController(withIdentifier: "top")
-            let bottom = storyboard.instantiateViewController(withIdentifier: "bottom")
+            let middle = storyboard.instantiateViewController(withIdentifier: "middle") as! SearchViewController
+			middle.user = user
+			
+            let top = storyboard.instantiateViewController(withIdentifier: "top") as! StreamViewController
+			top.user = user
+			
+            let bottom = storyboard.instantiateViewController(withIdentifier: "bottom") as! LibraryMenuViewController
+			bottom.user = user 
             
             let snapContainer = SnapContainerViewController.containerViewWith(_middleVC: middle, topVC: top, bottomVC: bottom)
 

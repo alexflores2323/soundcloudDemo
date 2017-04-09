@@ -19,7 +19,7 @@ class StreamViewController: UITableViewController, StreamCellDelegate {
 	var db: FIRDatabaseReference!
 	
 	var user: FIRUser!
-
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 		
@@ -49,46 +49,24 @@ class StreamViewController: UITableViewController, StreamCellDelegate {
         let audio = audioObjects[indexPath.row]
         
         cell.likeButton.isHidden = true
-//        audio.fetchLikersData { (likes, isLiked, error) in
-//            if error == nil {
-//                cell.likeButton.isHidden = false
-//                cell.likeButton.isSelected = isLiked
-//            }
-//        }
+        audio.fetchLikersData { (likes, isLiked, error) in
+            if error == nil {
+                cell.likeButton.isHidden = false
+                cell.likeButton.isSelected = isLiked
+            }
+        }
 		
         
         let object = audio.object
-        
+		
         cell.object = object
+		cell.audioKey = audio.autogenKey
+		
         cell.delegate = self
-		if let name = user.displayName {
-			cell.usernameLabel.text = name
-		}
-		else { cell.usernameLabel.text = user.email! }
-//		if user.photoURL != nil {
-//		URLSession.shared.dataTask(with: user.photoURL!) { (data, response, error) in
-//			if error != nil {
-//				print("Failed fetching image: \(error?.localizedDescription)")
-//				return
-//			}
-//			guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-//				print("Not a proper HTTPURLResponse or statusCode")
-//				return
-//			}
-//			
-//			DispatchQueue.main.async {
-//				//self.backgroundImageView.image = UIImage(data: data!)
-//				//self.profilePictureView.image = UIImage(data: data!)
-//			}
-//			}.resume()
-//		}
-
-        cell.captionLabel.text = object.object(forKey: "description") as? String
-        if let length = object.object(forKey: "length") as? NSNumber {
-            cell.musicLengthLabel.text = length.stringValue
-        }
-        
-        let formatter = DateFormatter()
+	
+        cell.captionLabel.text = object["title"] as! String
+		cell.musicLengthLabel.text = (object["length"] as! String).uppercased()
+		let formatter = DateFormatter()
         formatter.dateFormat = "MMM dd, yyyy"
         if let postedDate = object["createdAt"] as? String {
             cell.timeLabel.text = postedDate
@@ -156,7 +134,7 @@ class StreamViewController: UITableViewController, StreamCellDelegate {
     
     func streamCell(cell: StreamCell, didSelecteViewProfileButtonForUser user: FIRUser) {
         if let profileVC = storyboard?.instantiateViewController(withIdentifier: "bottom") as? LibraryMenuViewController {
-            profileVC.user = user
+            profileVC.user = FIRAuth.auth()?.currentUser!
             navigationController?.pushViewController(profileVC, animated: true)
         }
     }
