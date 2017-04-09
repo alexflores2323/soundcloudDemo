@@ -13,7 +13,7 @@ import Firebase
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+	var user: User?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		
@@ -60,11 +60,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if username != nil {
             
             let storyboard : UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-            
-            let middle = storyboard.instantiateViewController(withIdentifier: "middle")
-            let top = storyboard.instantiateViewController(withIdentifier: "top")
-            let bottom = storyboard.instantiateViewController(withIdentifier: "bottom")
-            
+			
+			// search
+            let middle = storyboard.instantiateViewController(withIdentifier: "middle") as! SearchViewController
+			middle.u = self.user
+			
+			// stream
+            let top = storyboard.instantiateViewController(withIdentifier: "top") as! StreamViewController
+			top.u = self.user
+			
+			// library
+			let bottom = storyboard.instantiateViewController(withIdentifier: "bottom") as! LibraryMenuViewController
+            bottom.u = self.user
+			
             let snapContainer = SnapContainerViewController.containerViewWith(_middleVC: middle, topVC: top, bottomVC: bottom)
 
             self.window?.rootViewController = snapContainer

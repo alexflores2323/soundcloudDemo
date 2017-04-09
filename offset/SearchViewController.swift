@@ -16,6 +16,8 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
 	
     var objects = [AnyObject]()
 	
+	var u: User!
+	
     @IBOutlet weak var searchBar: UISearchBar!
 
     override func viewDidLoad() {

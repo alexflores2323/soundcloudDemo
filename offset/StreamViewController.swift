@@ -9,16 +9,23 @@
 import UIKit
 import SDWebImage
 import Firebase
+import FirebaseDatabaseUI
 
 class StreamViewController: UITableViewController, StreamCellDelegate {
+	internal func streamCell(cell: StreamCell, didSelecteViewProfileButtonForUser user: User) {
+		<#code#>
+	}
+
+	
     
     var audioObjects = [Audio]()
-	
 	var audioKeys = [String]()
-	
 	var db: FIRDatabaseReference!
-	
 	var user: FIRUser!
+	var u: User!
+	
+	var tableViewDataSource: FUITableViewDataSource!
+	var query: FIRDatabaseQuery!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,8 +34,33 @@ class StreamViewController: UITableViewController, StreamCellDelegate {
 		
 		user = (FIRAuth.auth()?.currentUser)!
 		
-        loadData()
-        
+		//loadData()
+		self.query = self.db.child("activity").queryLimited(toLast: 50)
+		
+		self.tableViewDataSource = self.tableView.bind(to: self.query!) { (view, indexPath, snap) -> StreamCell in
+				let cell = view.dequeueReusableCell(withIdentifier: "StreamCell", for: indexPath) as! StreamCell
+				let audio = self.audioObjects[indexPath.row]
+				
+				cell.likeButton.isHidden = true
+				audio.fetchLikersData { (likes, isLiked, error) in
+					if error == nil {
+						cell.likeButton.isHidden = false
+						cell.likeButton.isSelected = isLiked
+					}
+				}
+				
+				
+				//let object = audio
+				
+				cell.object = audio
+				cell.delegate = self
+				if let name = self.user.email {
+					cell.usernameLabel.text = name
+				}
+				
+				return cell
+		}
+		
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(loadData), for: .valueChanged)
     }
@@ -49,22 +81,21 @@ class StreamViewController: UITableViewController, StreamCellDelegate {
         let audio = audioObjects[indexPath.row]
         
         cell.likeButton.isHidden = true
-//        audio.fetchLikersData { (likes, isLiked, error) in
-//            if error == nil {
-//                cell.likeButton.isHidden = false
-//                cell.likeButton.isSelected = isLiked
-//            }
-//        }
+        audio.fetchLikersData { (likes, isLiked, error) in
+            if error == nil {
+                cell.likeButton.isHidden = false
+                cell.likeButton.isSelected = isLiked
+            }
+        }
 		
         
-        let object = audio.object
+		//let object = audio.object
         
-        cell.object = object
+        cell.object = audio
         cell.delegate = self
-		if let name = user.displayName {
+		if let name = user.email {
 			cell.usernameLabel.text = name
 		}
-		else { cell.usernameLabel.text = user.email! }
 //		if user.photoURL != nil {
 //		URLSession.shared.dataTask(with: user.photoURL!) { (data, response, error) in
 //			if error != nil {

@@ -16,9 +16,9 @@ class LibraryMenuViewController: UITableViewController {
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var profilePictureView: UIImageView!
     @IBOutlet weak var usernameLabel: UILabel!
-
-	//var user: PFUser?
-
+	
+	var u: User!
+	
 	var user: FIRUser!
 	var db: FIRDatabaseReference!
 

@@ -22,6 +22,7 @@ class MusicCollectionViewController: UITableViewController {
 
 	var uid: String!
 	
+	var u: User!
     
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -26,9 +26,13 @@ class StreamCell: UITableViewCell {
 	
 	var likers: [String]?
 	
-	var object: AnyObject?
+	var object: Audio!
 	
     var delegate: StreamCellDelegate?
+	
+	var user: User!
+	
+	var db = FIRDatabase.database().reference().child("activity")
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -37,12 +41,7 @@ class StreamCell: UITableViewCell {
     }
     
     @IBAction func viewProfileButtonPressed(_ sender: UIButton) {
-		if let user = FIRAuth.auth()?.currentUser {
-			delegate?.streamCell(cell: self, didSelecteViewProfileButtonForUser: user)
-		}
-//        if let theUser = object?.object(forKey: "user") as? PFUser {
-//            delegate?.streamCell(cell: self, didSelecteViewProfileButtonForUser: theUser)
-//        }
+		delegate?.streamCell(cell: self, didSelecteViewProfileButtonForUser: user)
     }
     
     func fetchLikeData() {
@@ -52,10 +51,14 @@ class StreamCell: UITableViewCell {
                 print("no audio object")
                 return
             }
-            guard let currentUser = FIRAuth.auth()?.currentUser else {
-                print("no user logged in")
-                return
-            }
+//            guard let currentUser = FIRAuth.auth()?.currentUser else {
+//                print("no user logged in")
+//                return
+//            }
+			let query = (db.queryOrderedByKey().queryEqual(toValue: "like", childKey: "type"))
+			query.observeSingleEvent(of: .value, with: {(snapshot) in
+				print(snapshot.value!)
+			})
 //            let query = PFQuery(className: "Activity")
 //            query.whereKey("user", equalTo: currentUser)
 //            query.whereKey("audio", equalTo: audioObject)
@@ -114,5 +117,5 @@ class StreamCell: UITableViewCell {
 }
 
 protocol StreamCellDelegate {
-    func streamCell(cell: StreamCell, didSelecteViewProfileButtonForUser user: FIRUser)
+    func streamCell(cell: StreamCell, didSelecteViewProfileButtonForUser user: User)
 }

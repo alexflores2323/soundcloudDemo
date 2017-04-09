@@ -73,6 +73,7 @@ class SignInVC: UIViewController {
 				let u = User(user: userData)
 				UserHelper.saveUser(user: u)
 				let appDelegate = UIApplication.shared.delegate as! AppDelegate
+				appDelegate.user = u
 				appDelegate.login()
 			}
 			else {

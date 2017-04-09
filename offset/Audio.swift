@@ -33,7 +33,9 @@ class Audio: NSObject {
 			self.likers = [String]()
 			guard let currentUser = FIRAuth.auth()?.currentUser
 				else { return }
-			db.child("songs").child(autogenKey).observeSingleEvent(of: .value, with: {(snapshot) in
+			let likeQuery = (db.child("activity").queryOrderedByKey())
+			print(likeQuery)
+			db.child("activity").observeSingleEvent(of: .value, with: {(snapshot) in
 				let data = snapshot.value! as! [String: Any]
 				if let likeData = data["likers"] as? [String: String] {
 					let keys = likeData.keys
