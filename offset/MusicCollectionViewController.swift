@@ -61,7 +61,7 @@ class MusicCollectionViewController: UITableViewController {
         if let collectionUser = user {
 			print("collection user id passed")
 			//var playedData = [[String: AnyObject]]()
-			let id = collectionUser.uid
+			//let id = collectionUser.uid
 //			db.child("users").child(id).child("plays").observeSingleEvent(of: .value, with: { snapshot in
 //				if let played = snapshot.value as? [String: AnyObject] {
 //					let allKeys = played.keys
@@ -75,8 +75,7 @@ class MusicCollectionViewController: UITableViewController {
 //					}
 //				}
 //			})
-			// check user's recent activity: pull last played or play history for audio tree
-			// use this to populate the tableView
+	
 			let query = (db.child("activity").queryOrdered(byChild: "audio"))
 			print(query)
 			query.observeSingleEvent(of: .value, with: {snapshot in
@@ -109,7 +108,7 @@ class MusicCollectionViewController: UITableViewController {
 							cell.coverArtThumbnailView.sd_setImage(with: coverURL)
 						}
 					}
-					cell.titleLabel.text = audioObject["title"] as! String
+					cell.titleLabel.text = (audioObject["description"] as! String)
 				}
 			})
 		}

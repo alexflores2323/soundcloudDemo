@@ -54,7 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func login() {
         
         // remember user's login
-        let username : String? = UserDefaults.standard.string(forKey: "username")
+        let username : String? = UserDefaults.standard.string(forKey: "email")
         
         // if loged in
         if username != nil {
