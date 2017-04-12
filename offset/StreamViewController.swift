@@ -9,6 +9,8 @@
 import UIKit
 import SDWebImage
 import Firebase
+import CoreGraphics
+import ImageIO
 
 class StreamViewController: UITableViewController, StreamCellDelegate {
     
@@ -64,17 +66,19 @@ class StreamViewController: UITableViewController, StreamCellDelegate {
 		
         cell.delegate = self
 	
-        cell.captionLabel.text = object["title"] as! String
+        cell.captionLabel.text = (object["description"] as! String)
 		cell.musicLengthLabel.text = (object["length"] as! String).uppercased()
 		let formatter = DateFormatter()
         formatter.dateFormat = "MMM dd, yyyy"
         if let postedDate = object["createdAt"] as? String {
             cell.timeLabel.text = postedDate
         }
-		let coverURL = URL(string:  object["cover"] as! String)
+		let coverURL = URL(string: object["cover"] as! String)
+
+		
 		URLSession.shared.dataTask(with: coverURL!) { (data, response, error) in
 			if error != nil {
-				print("Failed fetching image: \(error?.localizedDescription)")
+				print("Failed fetching image: \(String(describing: error?.localizedDescription))")
 				return
 			}
 			guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
@@ -85,7 +89,38 @@ class StreamViewController: UITableViewController, StreamCellDelegate {
 			DispatchQueue.main.async {
 				cell.coverArtImageView.image = UIImage(data: data!)
 			}
-		}.resume()
+			}.resume()
+		//		URLSession.shared.dataTask(with: URL(string: coverURL)!) { (data, response, error) in
+//			if error != nil {
+//				print("Failed fetching image: \(error?.localizedDescription)")
+//				return
+//			}
+//			guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+//				print("Not a proper HTTPURLResponse or statusCode")
+//				return
+//			}
+//			
+//			DispatchQueue.main.async {
+//				let cgImage = UIImage(data: data!)!.cgImage!
+//				
+//				let width = cgImage.width / 2
+//				let height = cgImage.height / 2
+//				let bitsPerComponent = cgImage.bitsPerComponent
+//				let bytesPerRow = cgImage.bytesPerRow
+//				let colorSpace = cgImage.colorSpace
+//				let bitmapInfo = cgImage.bitmapInfo
+//				
+//				let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace!, bitmapInfo: bitmapInfo.rawValue)
+//				
+//				context!.interpolationQuality = CGInterpolationQuality.high
+//				context?.draw(cgImage, in: CGRect(origin: .zero, size: CGSize(width: CGFloat(width), height: CGFloat(height))))
+//				
+//				//deprecated:
+//				//CGContextDrawImage(context, CGRect(origin: CGPointZero, size: CGSize(width: CGFloat(width), height: CGFloat(height))), cgImage)
+//				
+//				let scaledImage = context?.makeImage()
+//			}
+//		}.resume()
         cell.fetchLikeData()
 
         return cell
@@ -105,8 +140,10 @@ class StreamViewController: UITableViewController, StreamCellDelegate {
     }
     
     func loadData() {
-		db.child("activity").observeSingleEvent(of: .value, with: { (snapshot) in
+		// keep a websocket open, and reload the table every time new data shows up
+		db.child("activity").observe(.value, with: { (snapshot) in
 			if let data = snapshot.value! as? [String: AnyObject] {
+				self.audioKeys.removeAll()
 				for k in data.keys {
 					let act = data[k] as? [String: AnyObject]
 					let key = act!["audio"] as! String

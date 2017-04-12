@@ -32,7 +32,7 @@ class LibraryMenuViewController: UITableViewController {
 			guard let url = URL(string: urlString) else { return }
 			URLSession.shared.dataTask(with: url) { (data, response, error) in
 				if error != nil {
-					print("Failed fetching image: \(error?.localizedDescription)")
+					print("Failed fetching image: \(String(describing: error?.localizedDescription))")
 					return
 				}
 				guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {

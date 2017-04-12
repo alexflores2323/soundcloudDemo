@@ -67,13 +67,11 @@ class SignInVC: UIViewController {
 
 	func setAuthListener() {
 		FIRAuth.auth()?.addStateDidChangeListener({ auth, user in
-			if user != nil {
-				let uid = user!.uid
-				let userData = ["uid": uid, "first": "", "last": "", "email": ""]
-				//let u = User(user: userData)
-				UserHelper.saveFIRUser(user: user!)
+			if let user = user {
+				UserDefaults.standard.set(user.email!, forKey: "email")
+				UserDefaults.standard.synchronize()
 				let appDelegate = UIApplication.shared.delegate as! AppDelegate
-				appDelegate.user = user!
+				appDelegate.user = user
 				appDelegate.login()
 			}
 			else {

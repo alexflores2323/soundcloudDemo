@@ -50,7 +50,7 @@ class NowPlayingViewController: UIViewController {
 	func setCoverImage(_ fromURL: URL) {
 		URLSession.shared.dataTask(with: fromURL) { (data, response, error) in
 			if error != nil {
-				print("Failed fetching image: \(error?.localizedDescription)")
+				print("Failed fetching image: \(String(describing: error?.localizedDescription))")
 				return
 			}
 			guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
@@ -70,7 +70,7 @@ class NowPlayingViewController: UIViewController {
 		db.child(dataPath).observeSingleEvent(of: .value, with: {snapshot in
 			if let lastPlayed = snapshot.value! as? [String: String] {
 				if self.object == nil {
-					let last = ["title": lastPlayed["title"], "cover": "url"]
+					//let last = ["title": lastPlayed["title"], "cover": "url"]
 					//self.object?.updateValue(lastPlayed["cover"]!, forKey: "cover")
 					self.object?.updateValue(lastPlayed[""]!, forKey: "cover")
 				}
